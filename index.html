@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produção Audiovisual com Propósito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#32a8aa',
+                            500: '#8c52ff',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        secondary: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1630&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        .zoom-hover {
+            transition: transform 0.3s ease;
+        }
+        
+        .zoom-hover:hover {
+            transform: scale(1.03);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .nav-hidden {
+            transform: translateY(-100%);
+        }
+        
+        .nav-visible {
+            transform: translateY(0);
+        }
+        
+        .transition-nav {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        /* Hamburger menu animation */
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: white;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        /* Gallery hover effect */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gallery-item img {
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-md z-50 transition-nav nav-hidden md:nav-visible">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class=""><img src="assets/logo.png" width="100px" alt="logo"></a>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#services" class="hover:text-primary-500 transition">Serviços</a>
+                <a href="#portfolio" class="hover:text-primary-500 transition">Portfólio</a>
+                <a href="#plans" class="hover:text-primary-500 transition">Planos</a>
+                <a href="#about" class="hover:text-primary-500 transition">Sobre</a>
+                <a href="#contact" class="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition">Orçamento</a>
+            </div>
+            
+            <button id="hamburger" class="md:hidden hamburger focus:outline-none">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="#services" class="py-2 hover:text-primary-600 transition">Serviços</a>
+                <a href="#portfolio" class="py-2 hover:text-primary-600 transition">Portfólio</a>
+                <a href="#plans" class="py-2 hover:text-primary-600 transition">Planos</a>
+                <a href="#about" class="py-2 hover:text-primary-600 transition">Sobre</a>
+                <a href="#contact" class="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition text-center">Orçamento</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center text-white pt-16">
+        <div class="container mx-auto px-4 py-20 text-center fade-in">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 slide-up">Produção Audiovisual </h1>
+            <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto slide-up">Vídeos e fotos que vendem, conectam e posicionam sua marca</p>
+            <a href="#contact" class="bg-primary-500 hover:bg-primary-400 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 inline-block slide-up">Peça seu orçamento</a>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 slide-up">Nossos <span class="text-primary-500">Diferenciais</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 slide-up">
+                    <div class="text-primary-500 text-4xl mb-4">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Roteiro estratégico</h3>
+                    <p class="text-gray-600">Desenvolvemos narrativas que engajam seu público-alvo e comunicam sua mensagem de forma clara e impactante.</p>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 slide-up">
+                    <div class="text-primary-500 text-4xl mb-4">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Captação profissional</h3>
+                    <p class="text-gray-600">Equipamentos de última geração e equipe técnica especializada para garantir a melhor qualidade de imagem e som.</p>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 slide-up">
+                    <div class="text-primary-500 text-4xl mb-4">
+                        <i class="fas fa-cut"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Edição com identidade</h3>
+                    <p class="text-gray-600">Processo criativo que respeita a identidade visual da sua marca, com ritmo e linguagem adequados ao seu público.</p>
+                </div>
+                
+                <!-- Service 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 slide-up">
+                    <div class="text-primary-500 text-4xl mb-4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Entregas ágeis</h3>
+                    <p class="text-gray-600">Fluxo de trabalho otimizado para garantir prazos curtos sem comprometer a qualidade do material final.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 slide-up">Nossos <span class="text-primary-500">Trabalhos</span></h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Portfolio Item 1 -->
+                <div class="gallery-item rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 slide-up">
+                    <img src="https://images.unsplash.com/photo-1551269901-5c5e14c25df7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Vídeo institucional" class="w-full h-64 object-cover">
+                    <div class="gallery-caption">
+                        <h3 class="font-bold">Reel institucional</h3>
+                        <p class="text-sm">Cliente: Empresa X</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 2 -->
+                <div class="gallery-item rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 slide-up">
+                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Comercial" class="w-full h-64 object-cover">
+                    <div class="gallery-caption">
+                        <h3 class="font-bold">Comercial de produto</h3>
+                        <p class="text-sm">Cliente: Marca Y</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 3 -->
+                <div class="gallery-item rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 slide-up">
+                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Evento corporativo" class="w-full h-64 object-cover">
+                    <div class="gallery-caption">
+                        <h3 class="font-bold">Cobertura de evento</h3>
+                        <p class="text-sm">Cliente: Empresa Z</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 4 -->
+                <div class="gallery-item rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 slide-up">
+                    <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Documentário" class="w-full h-64 object-cover">
+                    <div class="gallery-caption">
+                        <h3 class="font-bold">Série documental</h3>
+                        <p class="text-sm">Cliente: ONG A</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 5 -->
+                <div class="gallery-item rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 slide-up">
+                    <img src="https://images.unsplash.com/photo-1521791136064-7986504e5a80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Campanha digital" class="w-full h-64 object-cover">
+                    <div class="gallery-caption">
+                        <h3 class="font-bold">Campanha digital</h3>
+                        <p class="text-sm">Cliente: Startup B</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 6 -->
+                <div class="gallery-item rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 slide-up">
+                    <img src="https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1476&q=80" alt="Fotografia" class="w-full h-64 object-cover">
+                    <div class="gallery-caption">
+                        <h3 class="font-bold">Sessão fotográfica</h3>
+                        <p class="text-sm">Cliente: Empreendedor C</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Plans Section -->
+    <section id="plans" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 slide-up">Nossos <span class="text-primary-500">Planos</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Plan 1 -->
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 slide-up">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-primary-500">Básico</h3>
+                        <p class="text-gray-500 mt-2">Ideal para pequenos projetos</p>
+                    </div>
+                    <div class="text-center mb-8">
+                        <span class="text-4xl font-bold text-primary-500">R$ 1.999</span>
+                        <span class="text-gray-500">/projeto</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>1 dia de filmagem</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Vídeo de até 1 minuto</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>1 revisão incluída</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-times text-gray-400 mr-2"></i>
+                            <span>Locução profissional</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-times text-gray-400 mr-2"></i>
+                            <span>Motion graphics</span>
+                        </li>
+                    </ul>
+                    <a href="#contact" class="block text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-md transition duration-300">Escolher este plano</a>
+                </div>
+                
+                <!-- Plan 2 (Featured) -->
+                <div class="bg-white p-8 rounded-lg shadow-xl border-2 border-primary-500 transform scale-105 slide-up relative">
+                    <div class="absolute top-0 right-0 bg-primary-500 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-bold">
+                        Mais solicitado
+                    </div>
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-primary-500">Profissional</h3>
+                        <p class="text-gray-500 mt-2">Solução completa</p>
+                    </div>
+                    <div class="text-center mb-8">
+                        <span class="text-4xl font-bold text-primary-500">R$ 3.999</span>
+                        <span class="text-gray-500">/projeto</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>2 dias de filmagem</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Vídeo de até 3 minutos</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>3 revisões incluídas</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Locução profissional</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-times text-gray-400 mr-2"></i>
+                            <span>Motion graphics básico</span>
+                        </li>
+                    </ul>
+                    <a href="#contact" class="block text-center bg-primary-500 hover:bg-primary-400 text-white font-bold py-3 px-6 rounded-md transition duration-300">Escolher este plano</a>
+                </div>
+                
+                <!-- Plan 3 -->
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 slide-up">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-secondary-700">Premium</h3>
+                        <p class="text-gray-500 mt-2">Para grandes projetos</p>
+                    </div>
+                    <div class="text-center mb-8">
+                        <span class="text-4xl font-bold text-primary-500">R$ 6.999</span>
+                        <span class="text-gray-500">/projeto</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>5 dias de filmagem</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Vídeo de até 10 minutos</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Revisões ilimitadas</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Locução premium</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-primary-500 mr-2"></i>
+                            <span>Motion graphics avançado</span>
+                        </li>
+                    </ul>
+                    <a href="#contact" class="block text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-md transition duration-300">Escolher este plano</a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 slide-up">
+                <p class="text-gray-600 mb-4">Precisa de algo personalizado?</p>
+                <a href="#contact" class="inline-block border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-bold py-2 px-6 rounded-md transition duration-300">Solicitar orçamento customizado</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-primary-400 text-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 slide-up">Para quem e por que escolher <span class="text-primary-500">Produção Audiovisual</span></h2>
+            
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="slide-up">
+                    <div class="flex items-start mb-6">
+                        <div class="bg-primary-500 p-2 rounded-full mr-4">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Marcas que querem autoridade digital</h3>
+                            <p class="text-gray-300">Conteúdo audiovisual de qualidade aumenta em até 80% a percepção de valor da sua marca no mercado.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start mb-6">
+                        <div class="bg-primary-500 p-2 rounded-full mr-4">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Profissionais que buscam engajamento real</h3>
+                            <p class="text-gray-300">Vídeos geram 1200% mais compartilhamentos que textos e imagens juntos nas redes sociais.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-up">
+                    <div class="flex items-start mb-6">
+                        <div class="bg-primary-500 p-2 rounded-full mr-4">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Eventos que merecem registro de alta qualidade</h3>
+                            <p class="text-gray-300">Transformamos momentos efêmeros em conteúdo duradouro que amplifica o alcance do seu evento.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start mb-6">
+                        <div class="bg-primary-500 p-2 rounded-full mr-4">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Negócios que precisam converter mais</h3>
+                            <p class="text-gray-300">Páginas com vídeo podem aumentar conversões em até 80% em comparação com páginas sem vídeo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contactT" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto bg-gray-50 rounded-xl shadow-lg overflow-hidden slide-up">
+                <div class="md:flex">
+                    <div class="md:w-1/2 bg-primary-500 text-white p-8 md:p-12">
+                        <h2 class="text-3xl font-bold mb-6">Vamos conversar sobre seu projeto?</h2>
+                        <p class="mb-6">Preencha o formulário ao lado e entraremos em contato em até 24 horas para discutir sua necessidade.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-xl">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Telefone</h3>
+                                    <p>(11) 93222-3533</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="mr-4 text-xl">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">E-mail</h3>
+                                    <p>cristatus.contatu@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="mr-4 text-xl">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Endereço</h3>
+                                    <p>Av. Nações Unidas, 17007 - São Paulo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2 p-8 md:p-12">
+                        <h3 class="text-2xl font-bold text-secondary-800 mb-6">Solicite seu orçamento</h3>
+                        
+                        <form id="budgetForm" class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nome completo*</label>
+                                <input type="text" id="name" name="name" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                
+                            </div>
+                            
+                            <div>
+                                <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">Telefone/WhatsApp*</label>
+                                <input type="number" id="contact" name="contact" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail*</label>
+                                <input type="email" id="email" name="email" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                
+                            </div>
+                            
+                            <div>
+                                <label for="segment" class="block text-sm font-medium text-gray-700 mb-1">Nicho/Segmento*</label>
+                                <select id="segment" name="segment" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    <option value="" disabled selected>Selecione uma opção</option>
+                                    <option value="Moda e Beleza">Moda e Beleza</option>
+                                    <option value="Gastronomia">Gastronomia</option>
+                                    <option value="Tecnologia">Tecnologia</option>
+                                    <option value="Saúde e Bem-estar">Saúde e Bem-estar</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Varejo">Varejo</option>
+                                    <option value="Serviços">Serviços</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Detalhes do projeto (opcional)</label>
+                                <textarea id="message" name="message" rows="3" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                            </div>
+                            
+                            <button type="button" onclick="Form()" class="w-full bg-primary-500 hover:bg-primary-500 text-white font-bold py-3 px-4 rounded-md transition duration-300">
+                                Enviar solicitação
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-secondary-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="slide-up">
+                    <h3 class="text-xl font-bold mb-4">Audiovisual</h3>
+                    <p class="mb-4 text-gray-300">Produção audiovisual , criando conteúdos que vendem, conectam e posicionam sua marca.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/cristatus.oficial/" class="text-gray-300 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/cristatus.oficial/" class="text-gray-300 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/cristatus.oficial/" class="text-gray-300 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="slide-up">
+                    <h3 class="text-xl font-bold mb-4">Links úteis</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#services" class="text-gray-300 hover:text-white transition">Serviços</a></li>
+                        <li><a href="#portfolio" class="text-gray-300 hover:text-white transition">Portfólio</a></li>
+                        <li><a href="#plans" class="text-gray-300 hover:text-white transition">Planos</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-white transition">Sobre</a></li>
+                        <li><a href="#contact" class="text-gray-300 hover:text-white transition">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="slide-up">
+                    <h3 class="text-xl font-bold mb-4">Contato</h3>
+                    <div class="space-y-3">
+                        <p><i class="fas fa-phone-alt mr-2"></i> (11) 932223533</p>
+                        <p><i class="fas fa-envelope mr-2"></i> cristatus.contato@gmail.com</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i> Av. Nações Unidas, 17007 - São Paulo</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm slide-up">
+                <p>&copy; 2025 Cristatus Produção Audiovisual. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Show navigation on scroll up
+        let lastScroll = 0;
+        const navbar = document.querySelector('nav');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll <= 0) {
+                navbar.classList.remove('nav-hidden');
+                return;
+            }
+            
+            if (currentScroll > lastScroll && !navbar.classList.contains('nav-hidden')) {
+                // Scroll down
+                navbar.classList.add('nav-hidden');
+            } else if (currentScroll < lastScroll && navbar.classList.contains('nav-hidden')) {
+                // Scroll up
+                navbar.classList.remove('nav-hidden');
+            }
+            
+            lastScroll = currentScroll;
+        });
+                
+        // Scroll animations
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.slide-up');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if (elementPosition < screenPosition) {
+                    element.classList.add('animate-slide-up');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+        
+        // Show navigation when page loads if not at top
+        if (window.pageYOffset > 0) {
+            navbar.classList.remove('nav-hidden');
+        }
+        function Form() {
+            var nameField    = document.querySelector('#name');
+            var contactField = document.querySelector('#contact');
+            var emailField   = document.querySelector('#email');
+            var segmentField = document.querySelector('#segment');
+            var messageField = document.querySelector('#message');
+
+            var contentName    = nameField.value.trim();
+            var contentContact = contactField.value.trim();
+            var contentEmail   = emailField.value.trim();
+            var contentSegment = segmentField.value.trim();
+            var contentMessage = messageField.value.trim();
+
+            if (!contentName || !contentContact || !contentEmail || !contentSegment || !contentMessage) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            // Monta a mensagem com quebras de linha
+            var text = 
+                "Olá! Gostaria de um orçamento de Produção Audiovisual:\n" +
+                "• Nome: " + contentName + "\n" +
+                "• Contato: " + contentContact + "\n" +
+                "• E-mail: " + contentEmail + "\n" +
+                "• Nicho/Segmento: " + contentSegment + "\n" +
+                "• Mensagem: " + contentMessage;
+
+            // Abre o WhatsApp com a mensagem formatada
+            var url = "https://wa.me/5511932223533?text=" + encodeURIComponent(text);
+            window.open(url, '_blank');
+        }
+
+    </script>
+</body>
+</html>
